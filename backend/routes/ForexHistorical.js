@@ -8,6 +8,18 @@ const { createDeflate } = require("zlib");
 
 const filePath = require("path").resolve(__dirname, "./EURUSD1.csv");
 
+router.get("/", async (req, res) => {
+    let limitValue = 5;
+
+    //checks if there is an additional limitValue in the query "/api/forex?limit=10"
+    if(req.query.limit && !isNaN(parseInt(req.query.limit))) {
+        limitValue = parseInt(req.query.limit);
+    }
+
+    const listOfForex = await ForexInfo.findAll({limit:limitValue});
+    res.json(listOfForex);
+});
+
 router.post("/", async (req, res) => {
 
     const forexData = [];
@@ -54,5 +66,8 @@ router.post("/", async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+
+
 
 module.exports = router;
